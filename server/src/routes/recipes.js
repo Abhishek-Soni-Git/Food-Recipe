@@ -83,6 +83,15 @@ router.get('/categorieswise', async (req, res) => {
   }
 });
 
+router.get('/latest-images', async (req, res) => {
+  try {
+    const recipes = await RecipesModel.find().sort({ createdAt: -1 }).limit(3);
+    res.json(recipes);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const result = await RecipesModel.find({}).sort({ likes: -1 });

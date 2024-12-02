@@ -3,11 +3,14 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import multer from 'multer';
 import path from 'path';
+import { OAuth2Client } from 'google-auth-library';
 // import multer from "multer"; // Import multer for handling file uploads
 // import path from "path"; // Import path for file path handling
 import { UserModel } from "../models/Users.js";
 
 const router = express.Router();
+
+const client = new OAuth2Client('952102601051-q7fuoo1cmmo4gpv28ut6a96vhsgt5h2e.apps.googleusercontent.com');
 
 
 const storage = multer.diskStorage({
@@ -50,15 +53,40 @@ router.post("/register", upload.single('image'), async (req, res) => {
   res.json({ message: "User registered successfully" });
 });
 
+router.post('/google', async (req, res) => {
+  const { token, name, email, profilePicture } = req.body;
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: "952102601051-q7fuoo1cmmo4gpv28ut6a96vhsgt5h2e.apps.googleusercontent.com",
+  });
+  const payload = ticket.getPayload();
+  // Save user info to your database or session
+  const user = await UserModel.findOne({ username:email });
+  if (user) {
+    return res.status(200).json({payload,user});
+  }
+  const newUser = new UserModel({ username:email, password: token, profilePicture: profilePicture, role:"User" });
+  await newUser.save();
+  res.json({payload,user:newUser});
+});
+
 router.put('/profile', upload.single('image'), async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId, name, bio, isChef } = req.body;
     const updateData = {};
 
     // If a new profile picture is uploaded, add its URL to update data
     if (req.file) {
       updateData.profilePicture = `/uploads/${req.file.filename}`;
     }
+
+    if(name)
+      updateData.name = name;
+    if(bio)
+      updateData.bio = bio;
+    
+    updateData.isChef = isChef;
+
 
     const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, {
       new: true,
@@ -71,6 +99,15 @@ router.put('/profile', upload.single('image'), async (req, res) => {
     res.json({ message: 'Profile updated successfully', user: updatedUser });
   } catch (error) {
     res.status(500).json({ message: 'Error updating profile', error: error.message });
+  }
+});
+
+router.get("/chefs", async (req, res) => {
+  try {
+    const chefs = await UserModel.find({ isChef: true }); // Query for isChef=true
+    res.status(200).json(chefs);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch chefs", details: error.message });
   }
 });
 

@@ -11,6 +11,7 @@ import { AdminRecipeList } from "./pages/AdminRecipeList";
 import { RecipeDetails } from "./pages/RecipeDetails"; 
 import UserProfile from "./pages/UserProfile";
 import FoodNews from "./pages/FoodNews";
+import Slider from "./components/Slider";
 
 function App() {
   return (

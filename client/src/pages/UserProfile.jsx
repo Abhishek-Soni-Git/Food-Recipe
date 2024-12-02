@@ -27,6 +27,9 @@ function UserProfile() {
   const [preview, setPreview] = useState(null);
   const [savedRecipes, setSavedRecipes] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
+  const [accType, setAccType] = useState("User");
 
   const userID = useGetUserID();
 
@@ -88,6 +91,9 @@ function UserProfile() {
         `http://localhost:3001/recipes/recipes/${id}`
       );
       setUser(response.data);
+      setName(response.data.name);
+      setBio(response.data.bio);
+      setAccType(response.data.isChef ? "Chef" : "User");
       setUserRecipePost(post.data);
       console.log(response.data);
       console.log(post.data);
@@ -121,11 +127,17 @@ function UserProfile() {
   };
 
   const handleProfileSubmit = async () => {
+    console.log(name);
+    console.log(bio);
+    console.log(accType);
     const formData = new FormData();
     formData.append('userId', id);
     if (profilePicture) {
       formData.append('image', profilePicture);
     }
+    formData.append("name",name);
+    formData.append("bio",bio);
+    formData.append("isChef",accType == "Chef");
 
     try {
       const response = await axios.put('http://localhost:3001/auth/profile', formData, {
@@ -136,6 +148,7 @@ function UserProfile() {
       console.log('Profile updated:', response.data);
       setProfilePicture(null);
       setPreview(null);
+      setIsEditing(false);
       setUser(response.data.user)
       // Optionally, update UI to show success message
     } catch (error) {
@@ -236,7 +249,7 @@ function UserProfile() {
           <div className="flex justify-between items-center gap-4">
             <div className="flex gap-2">
               <div className="flex flex-col">
-                {preview ? <label for="profileimg" className="rounded-full p-1 border-2 border-[#ff2e2e]" ><img src={preview} className="w-20 object-cover rounded-full aspect-square" /></label> : <label for="profileimg"><img src={import.meta.env.VITE_BACKEND_URL + user.profilePicture} className="w-20 object-cover rounded-full aspect-square" /></label>}
+                {preview ? <label for="profileimg" className="rounded-full p-1 border-2 border-[#ff2e2e]" ><img src={preview} className="w-20 object-cover rounded-full aspect-square" /></label> : <label for="profileimg"><img src={user.profilePicture.startsWith("http") ? user.profilePicture : import.meta.env.VITE_BACKEND_URL + user.profilePicture} className="w-20 object-cover rounded-full aspect-square" /></label>}
 
                 <input
                   hidden
@@ -244,15 +257,14 @@ function UserProfile() {
                   type="file"
                   onChange={handleFileChange}
                 />
-                <h1 className="text-xl font-bold">{user.username}</h1>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="flex flex-row gap-2">
-                  <div className="flex flex-col items-center">
+                <div className="flex flex-row gap-10 w-20% ">
+                  <div className="flex flex-col items-center w-10%">
                     <span className="font-bold">{user.followers.length}</span>
                     <span>Followers</span>
                   </div>
-                  <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center w-10%">
                     <span className="font-bold">{user.following.length}</span>
                     <span>Following</span>
                   </div>
@@ -264,11 +276,15 @@ function UserProfile() {
                 )}
               </div>
             </div>
-            {preview ? <div className="flex gap-2"><button onClick={() => handleProfileSubmit()} className="border-2 rounded-[20px] px-4 py-2">Save Profile</button><button onClick={() => setPreview(null)} className="border-2 rounded-[20px] px-4 py-2">Cancel</button></div> : isCurrentUser ? <label for="profileimg"><span className="border-2 rounded-[20px] px-4 py-2 bg-zinc-800 text-white">Edit Profile</span></label> : ""}
+            {preview || isEditing ? <div className="flex gap-2"><button onClick={() => handleProfileSubmit()} className="border-2 rounded-[20px] px-4 py-2">Save Profile</button><button onClick={() => {setPreview(null);setIsEditing(false)}} className="border-2 rounded-[20px] px-4 py-2">Cancel</button></div> : isCurrentUser ? <label onClick={()=>setIsEditing(true)}><span className="border-2 rounded-[20px] px-4 py-2 bg-zinc-800 text-white">Edit Profile</span></label> : ""}
 
           </div>
-
-          <textarea disabled={!isEditing}>{user.bio}</textarea>
+          <input type="text" className="text-xl font-bold" disabled={!isEditing} value={name} onChange={(e)=>setName(e.target.value)}/>
+          <textarea disabled={!isEditing} value={bio} onChange={(e)=>setBio(e.target.value)}></textarea>
+          <select className="w-fit" value={accType} disabled={!isCurrentUser} onChange={(e)=>setAccType(e.target.value)}>
+            <option value="User">User</option>
+            <option value="Chef">Chef</option>
+          </select>
 
           <div className="">
             <div className="my-4 font-bold text-3xl border-b-2 pb-2">My Post</div>
@@ -279,7 +295,7 @@ function UserProfile() {
             key={rcp._id}
           >
             <div>
-              <img src={import.meta.env.VITE_BACKEND_URL +rcp.imageUrl} alt={rcp.name} className="aspect-square object-cover w-[200px] flex flex-wrap" />
+              <img src={import.meta.env.VITE_BACKEND_URL +rcp.imageUrl} alt={rcp.name} className="aspect-square object-cover flex flex-wrap" />
               <h2 className="p-2 font-bold text-lg">{rcp.name}</h2>
               <div className="flex justify-between gap-2 p-2">
                 <div className="flex gap-2">
@@ -310,11 +326,11 @@ function UserProfile() {
               </div>
             </div>
            <div className="instructions">
-          <p>{rcp.instructions}</p>
+          <p className="p-2">{rcp.instructions}</p>
         </div>
         
         
-        <p>Cooking Time: {rcp.cookingTime} minutes</p> 
+        <p className="px-2">Cooking Time: {rcp.cookingTime} minutes</p> 
             <Link className="p-2 text-blue-600 text-sm font-bold mb-2" to={`/recipe/${rcp._id}`}>
               <button>More Details</button>
             </Link>
