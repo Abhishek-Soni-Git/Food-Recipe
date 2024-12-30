@@ -23,8 +23,9 @@ export const RecipeDetails = () => {
 
   return (
     <div>
-      <div className="p-4">
+      <div className="p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Recipe Details</h1>
+        <button className="bg-blue-500 font-bold rounded-[10px] p-2 px-4 text-white" onClick={()=>print()}>Download PDF</button>
       </div>
       <div className="flex px-4 gap-4">
         <div className="w-[40%]">
@@ -33,6 +34,8 @@ export const RecipeDetails = () => {
             alt={recipe.name}
             className="w-full rounded-[10px]"
           />
+          {recipe.videoUrl ? <video src={import.meta.env.VITE_BACKEND_URL +recipe.videoUrl} controls></video> :"" }
+          
         </div>
         <div className="w-[60%] flex flex-col gap-2">
           <h1 className="font-bold text-2xl">{recipe.name}</h1>

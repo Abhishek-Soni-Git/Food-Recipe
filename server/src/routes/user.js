@@ -138,6 +138,7 @@ export const verifyToken = (req, res, next) => {
   if (authHeader) {
     jwt.verify(authHeader, "secret", (err) => {
       if (err) {
+        console.log(authHeader , err)
         return res.sendStatus(403);
       }
       next();

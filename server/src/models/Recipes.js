@@ -24,6 +24,10 @@ const recipeSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  videoUrl: {
+    type: String,
+    required: true,
+  },
   cookingTime: {
     type: Number,
     required: true,

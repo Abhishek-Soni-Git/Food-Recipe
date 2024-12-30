@@ -62,7 +62,7 @@ const UserRegister = ({ setislogin }) => {
   return (
     <div className="w-100px flex justify-center items-center ">
       <div className="bg-white p-4 h-30 w- rounded-[10px] object-cover ">
-        <form onSubmit={handleSubmit} className="min-w-[250px] flex flex-col gap-2">
+        <form onSubmit={handleSubmit} className="min-w-[450px] flex flex-col gap-2">
           <h2 className="text-center font-bold text-xl mb-4">User Register</h2>
           <input type="file" onChange={handleFileChange} accept="image/*" />
           <div className="flex flex-col">
@@ -163,7 +163,7 @@ const UserLogin = ({ setislogin }) => {
 
   return (
     <div className="bg-white p-4 rounded-[10px]">
-      <form onSubmit={handleSubmit} className="min-w-[300px] flex flex-col gap-2">
+      <form onSubmit={handleSubmit} className="min-w-[450px] flex flex-col gap-2">
         <h2 className="text-center font-bold text-xl mb-4">Login</h2>
         <div className="flex flex-col">
           <label htmlFor="username">Username</label>
@@ -234,7 +234,7 @@ const AdminRegister = () => {
 
   return (
     <div className="bg-white p-4 rounded-[10px]">
-      <form onSubmit={handleSubmit} className="min-w-[250px] flex flex-col gap-2">
+      <form onSubmit={handleSubmit} className="min-w-[450px] flex flex-col gap-2">
         <h2 className="text-center font-bold text-xl mb-4">Admin Login</h2>
         <div className="flex flex-col">
           <label htmlFor="username">Username:</label>

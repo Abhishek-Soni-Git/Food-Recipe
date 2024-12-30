@@ -256,6 +256,7 @@ function UserProfile() {
                   id="profileimg"
                   type="file"
                   onChange={handleFileChange}
+                  accept="image/*"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -326,7 +327,6 @@ function UserProfile() {
               </div>
             </div>
            <div className="instructions">
-          <p className="p-2">{rcp.instructions}</p>
         </div>
         
         

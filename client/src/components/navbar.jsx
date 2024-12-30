@@ -13,6 +13,7 @@ function Navbar() {
   const [showChef, setShowChef] = useState(false);
 
   const logout = () => {
+    setShowChef(false);
     setCookies("access_token", "");
     window.localStorage.clear();
     navigate("/auth");
@@ -43,6 +44,7 @@ function Navbar() {
         <Link
           to={isAdmin ? "/adminhome" : "/home"}
           className=" font-bold text-xl flex gap-2"
+          onClick={(e)=>setShowChef(false)}
         >
           <img src={Logo} className="w-[30px]" />
           Recipe App
@@ -90,7 +92,7 @@ function Navbar() {
               ""
             ) : (
               <li>
-                <Link to="/create-recipe" className="block py-2 px-4">
+                <Link to="/create-recipe" className="block py-2 px-4" onClick={(e)=>setShowChef(false)}>
                   Create Recipe
                 </Link>
               </li>
@@ -99,13 +101,13 @@ function Navbar() {
               ""
             ) : (
               <li>
-                <Link to="/saved-recipes" className="block py-2 px-4">
+                <Link to="/saved-recipes" className="block py-2 px-4" onClick={(e)=>setShowChef(false)}>
                   Saved Recipes
                 </Link>
               </li>
             )}
             {isAdmin ? (
-              <li><Link to="/adminrecipe" className="block py-2 px-4">
+              <li><Link to="/adminrecipe" className="block py-2 px-4" onClick={(e)=>setShowChef(false)}>
                 Recipe List
               </Link></li>
             ) : (
@@ -115,6 +117,7 @@ function Navbar() {
               <li><Link
                 to="/auth"
                 className="block py-2 px-4"
+                onClick={(e)=>setShowChef(false)}
               >
                 Login/Register
               </Link></li>
@@ -123,6 +126,7 @@ function Navbar() {
                 <li><Link
                   to="/userprofile"
                   className="block py-2 px-4"
+                  onClick={(e)=>setShowChef(false)}
                 >
                   <img src={window.localStorage.getItem("img").startsWith("http") ? window.localStorage.getItem("img") : import.meta.env.VITE_BACKEND_URL + window.localStorage.getItem("img")} className="rounded-full w-[30px] h-[30px] aspect-square object-cover" />
                 </Link></li>
@@ -138,13 +142,14 @@ function Navbar() {
             <Link
               to="/food-news"
               className="block py-2 px-4"
+              onClick={(e)=>setShowChef(false)}
             >
               Food News
             </Link></li>
           </ul>
         </div>
       </div>
-      {showChef ? <div className="absolute left-0 top-[65px] z-30 w-full h-[200px] bg-white shadow-md px-4 flex gap-4">
+      {showChef ? <div className="absolute left-0 top-[65px] z-30 w-full h-[200px] bg-[#d9e7ff] shadow-md px-4 flex gap-4">
         {chefData && chefData.map((data, idx)=> {
           return <Link onClick={(e)=>setShowChef(false)} key={idx} to={"/userprofile/"+data._id} className="w-[200px] h-full flex flex-col items-center justify-center gap-2">
               <img src={data.profilePicture.startsWith("http") ? data.profilePicture : import.meta.env.VITE_BACKEND_URL + data.profilePicture} className="w-[100px] h-[100px] object-cover rounded-full" />

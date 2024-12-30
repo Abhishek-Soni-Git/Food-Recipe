@@ -22,13 +22,13 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png|gif/; // Allowed image formats
+    const fileTypes = /jpeg|jpg|png|gif|mp4/; // Allowed image formats
     const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = fileTypes.test(file.mimetype);
     if (mimetype && extname) {
       return cb(null, true);
     } else {
-      cb(new Error('Only images are allowed!')); // Reject non-image files
+      cb(new Error('Only images and videos are allowed!')); // Reject non-image files
     }
   },
 });
@@ -103,15 +103,25 @@ router.get("/", async (req, res) => {
 });
 
 // Create a new recipe
-router.post("/", verifyToken, upload.single('image'), async (req, res) => {
+router.post("/", verifyToken,  upload.fields([
+  { name: "image", maxCount: 1 }, // Accept one image
+  { name: "video", maxCount: 1 }, // Accept one video
+]), async (req, res) => {
   console.log(req.file)
+  const imageFile = req.files["image"] ? req.files["image"][0] : null;
+  const videoFile = req.files["video"] ? req.files["video"][0] : null;
+
+      // Get filenames
+  const imageFilename = imageFile ? imageFile.filename : null;
+  const videoFilename = videoFile ? videoFile.filename : null;
   const recipe = new RecipesModel({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     image: req.body.image,
     ingredients: req.body.ingredients,
     instructions: req.body.instructions,
-    imageUrl: '/uploads/'+req.file.filename,
+    imageUrl: '/uploads/'+imageFilename,
+    videoUrl: '/uploads/'+videoFilename,
     cookingTime: req.body.cookingTime,
     category:req.body.category,
     userOwner: req.body.userOwner,

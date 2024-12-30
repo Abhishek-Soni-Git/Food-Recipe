@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React , { useState } from "react";
 import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,8 @@ import { FaPlus } from "react-icons/fa";
 export const CreateRecipe = () => {
   const userID = useGetUserID();
   const [cookies, _] = useCookies(["access_token"]);
-  const [imgFile, setImgFile] = useState(null)
+  const [imgFile, setImgFile] = useState(null);
+  const [vidFile, setVidFile] = useState(null);
   const [recipe, setRecipe] = useState({
     name: "",
     description: "",
@@ -55,6 +56,11 @@ export const CreateRecipe = () => {
       alert("Please select image");
       return ;
     }
+    if(!vidFile){
+      formData.append('video',null);
+    } else {
+      formData.append('video',vidFile);
+    }
     formData.append('image',imgFile);
     setRecipe({ ...recipe, category });
     for (const key in recipe) {
@@ -68,14 +74,19 @@ export const CreateRecipe = () => {
         "http://localhost:3001/recipes",
         formData,
         {
-          headers: { authorization: cookies.access_token },
+          headers: { authorization:cookies.access_token},
         }
       );
+      console.log("Access Token:", cookies.access_token);
 
       alert("Recipe Created");
       navigate("/home");
     } catch (error) {
-      console.error(error);
+      if (error.response) {
+        console.error(`Error ${error.response.status}:`, error.response.data.message);
+      } else {
+        console.error("Error:", error.message);
+      }
     }
   };
 
@@ -153,13 +164,22 @@ export const CreateRecipe = () => {
                 placeholder="Enter Instructions"
                 className="h-[100px] p-1 px-2 bg-gray-100 rounded-[5px] border-[1px]"
               ></textarea>
-              <label htmlFor="imageUrl">Image URL</label>
+              <label htmlFor="imageUrl">Image</label>
               <input
                 type="file"
                 id="imageUrl"
                 name="image"
                 onChange={(e)=>setImgFile(e.target.files[0])}
-                placeholder="Enter image url"
+                accept="image/*"
+                className="p-1 px-2 bg-gray-100 rounded-[5px] border-[1px]"
+              />
+              <label htmlFor="videoUrl">Video</label>
+              <input
+                type="file"
+                id="videoUrl"
+                name="video"
+                accept="video/*" 
+                onChange={(e)=>setVidFile(e.target.files[0])}
                 className="p-1 px-2 bg-gray-100 rounded-[5px] border-[1px]"
               />
               <label htmlFor="cookingTime">Cooking Time (minutes)</label>
