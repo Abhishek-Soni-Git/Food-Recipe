@@ -128,7 +128,7 @@ function Navbar() {
                   className="block py-2 px-4"
                   onClick={(e)=>setShowChef(false)}
                 >
-                  <img src={window.localStorage.getItem("img").startsWith("http") ? window.localStorage.getItem("img") : import.meta.env.VITE_BACKEND_URL + window.localStorage.getItem("img")} className="rounded-full w-[30px] h-[30px] aspect-square object-cover" />
+                  <img src={window.localStorage.getItem("img")?.startsWith("http") ? window.localStorage?.getItem("img") : import.meta.env.VITE_BACKEND_URL + window.localStorage.getItem("img")} className="rounded-full w-[30px] h-[30px] aspect-square object-cover" />
                 </Link></li>
                 <li><button
                   onClick={logout}
@@ -138,14 +138,7 @@ function Navbar() {
                 </button></li>
               </>
             )}
-            <li>
-            <Link
-              to="/food-news"
-              className="block py-2 px-4"
-              onClick={(e)=>setShowChef(false)}
-            >
-              Food News
-            </Link></li>
+           
           </ul>
         </div>
       </div>

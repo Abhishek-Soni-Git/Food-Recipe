@@ -9,22 +9,8 @@ export const Auth = () => {
   const [islogin, setislogin] = useState(true);
 
   return (
-    <div className="bg-blue-500 h-[90%] flex flex-col gap-4 items-center">
-      <div className="flex gap-4 bg-gray-100 p-2 rounded-[10px] mt-4">
-        <button
-          className={`${isAdmin ? "" : "bg-white"} p-1 px-2 rounded-[5px]`}
-          onClick={() => setIsAdmin(false)}
-        >
-          User Login
-        </button>
-        <button
-          className={`${isAdmin ? "bg-white" : ""} p-1 px-2 rounded-[5px]`}
-          onClick={() => setIsAdmin(true)}
-        >
-          Admin Login
-        </button>
-      </div>
-      {isAdmin ? <AdminRegister /> : islogin ? <UserLogin setislogin={setislogin} /> : <UserRegister setislogin={setislogin} />}
+    <div className="bg-[#d1d1c9] h-[90%] flex flex-col gap-4 items-center justify-center">
+      {islogin ? <UserLogin setislogin={setislogin} /> : <UserRegister setislogin={setislogin} />}
     </div>
   );
 };
