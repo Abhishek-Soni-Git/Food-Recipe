@@ -1,6 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import multer from 'multer';
 import path from 'path';
 import { OAuth2Client } from 'google-auth-library';
