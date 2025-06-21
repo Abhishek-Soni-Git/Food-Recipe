@@ -10,7 +10,6 @@ import UserPage from "./pages/UserPage";
 import { AdminRecipeList } from "./pages/AdminRecipeList";
 import { RecipeDetails } from "./pages/RecipeDetails"; 
 import UserProfile from "./pages/UserProfile";
-import FoodNews from "./pages/FoodNews";
 import Slider from "./components/Slider";
 
 function App() {
@@ -30,7 +29,6 @@ function App() {
           <Route path="/userprofile" element={<UserProfile />} /> {/* User Route */}
           <Route path="/userprofile/:uid" element={<UserProfile />} /> {/* User Route */}
           <Route path="/recipe/:id" element={<RecipeDetails />} />
-          <Route path="/food-news" element={<FoodNews />} />
         </Routes>
       </Router>
     </div>

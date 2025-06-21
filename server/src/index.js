@@ -28,7 +28,7 @@ console.log(__dirname)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 mongoose.connect(
-  "mongodb://localhost:27017/foodrecipe",
+  process.env.MONGO_URL || "mongodb://localhost:27017/foodrecipe",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
